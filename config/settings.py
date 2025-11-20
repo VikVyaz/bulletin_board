@@ -1,9 +1,9 @@
 import os
-from pathlib import Path
-from decouple import config
 from datetime import timedelta
-from corsheaders.defaults import default_headers
+from pathlib import Path
 
+from corsheaders.defaults import default_headers
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -91,7 +91,7 @@ else:
             "NAME": config("POSTGRES_DB"),
             "USER": config("POSTGRES_USER"),
             "PASSWORD": config("POSTGRES_PASSWORD"),
-            "HOST": config("POSTGRES_HOST", default="localhost"),
+            "HOST": config("HOST", default="localhost"),
             "PORT": config("PORT"),
         }
     }
@@ -158,3 +158,26 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     "Authorization",
 ]
 
+# Yandex mailing
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('YANDEX_EMAIL_HOST', default='test')
+EMAIL_PORT = config('YANDEX_EMAIL_PORT', cast=int, default=465)
+EMAIL_USE_TLS = config('YANDEX_EMAIL_USE_TLS', cast=bool, default=False)
+EMAIL_USE_SSL = config('YANDEX_EMAIL_USE_SSL', cast=bool, default=True)
+EMAIL_HOST_USER = config('YANDEX_EMAIL_HOST_USER', default='test')
+EMAIL_HOST_PASSWORD = config('YANDEX_EMAIL_HOST_PASSWORD', default='test')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# CELERY
+
+CELERY_BROKER_URL = config('CELERY_BROKER_URL')
+
+CELERY_RESULT_BACKEND = config('CELERY_BACKEND')
+
+CELERY_TIMEZONE = "UTC"
+
+CELERY_ENABLE_UTC = True
+
+CELERY_TASK_TRACK_STARTED = True
+
+CELERY_TASK_TIME_LIMIT = 30 * 60
