@@ -1,3 +1,17 @@
 from django.contrib import admin
 
-# Register your models here.
+from board.models import Ad, Feedback
+
+
+@admin.register(Ad)
+class PleasantAdmin(admin.ModelAdmin):
+    """Доступ для админки для PleasantHabit"""
+
+    list_display = [field.name for field in Ad._meta.fields]
+
+
+@admin.register(Feedback)
+class PleasantAdmin(admin.ModelAdmin):
+    """Доступ для админки для PleasantHabit"""
+
+    list_display = [field.name for field in Feedback._meta.fields]

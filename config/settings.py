@@ -7,9 +7,9 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = config("SECRET_KEY")
 
-DEBUG = config('DEBUG')
+DEBUG = config("DEBUG")
 
 ALLOWED_HOSTS = []
 
@@ -20,15 +20,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "drf_yasg",
     "corsheaders",
-
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
     "django_celery_beat",
-
     "users",
     "board",
 ]
@@ -54,7 +51,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
     "corsheaders.middleware.CorsMiddleware",
 ]
 
@@ -121,7 +117,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -133,15 +129,18 @@ AUTH_USER_MODEL = "users.User"
 # SWAGGER
 
 SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header',
-            'description': 'Вставьте свой Bearer токен. Формат: "Bearer (токен)"',
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": 'Вставьте свой Bearer токен. Формат: "Bearer (токен)"',
         }
     },
 }
+if DEBUG:
+    SWAGGER_SETTINGS["USE_SESSION_AUTH"] = False
+    SWAGGER_SETTINGS["LOGIN_REQUIRED"] = False
 
 # CORS
 
@@ -151,7 +150,7 @@ else:
     CORS_ALLOWED_ORIGINS = [
         "http://127.0.0.1:8000",
         "http://127.0.0.1:8000/swagger/",
-        f'http://{config('SERVER_PUB_IP', default="http://localhost:8000")}'
+        f'http://{config('SERVER_PUB_IP', default="http://localhost:8000")}',
     ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
@@ -159,20 +158,20 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 ]
 
 # Yandex mailing
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config('YANDEX_EMAIL_HOST', default='test')
-EMAIL_PORT = config('YANDEX_EMAIL_PORT', cast=int, default=465)
-EMAIL_USE_TLS = config('YANDEX_EMAIL_USE_TLS', cast=bool, default=False)
-EMAIL_USE_SSL = config('YANDEX_EMAIL_USE_SSL', cast=bool, default=True)
-EMAIL_HOST_USER = config('YANDEX_EMAIL_HOST_USER', default='test')
-EMAIL_HOST_PASSWORD = config('YANDEX_EMAIL_HOST_PASSWORD', default='test')
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = config("YANDEX_EMAIL_HOST", default="test")
+EMAIL_PORT = config("YANDEX_EMAIL_PORT", cast=int, default=465)
+EMAIL_USE_TLS = config("YANDEX_EMAIL_USE_TLS", cast=bool, default=False)
+EMAIL_USE_SSL = config("YANDEX_EMAIL_USE_SSL", cast=bool, default=True)
+EMAIL_HOST_USER = config("YANDEX_EMAIL_HOST_USER", default="test")
+EMAIL_HOST_PASSWORD = config("YANDEX_EMAIL_HOST_PASSWORD", default="test")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # CELERY
 
-CELERY_BROKER_URL = config('CELERY_BROKER_URL')
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
 
-CELERY_RESULT_BACKEND = config('CELERY_BACKEND')
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND")
 
 CELERY_TIMEZONE = "UTC"
 

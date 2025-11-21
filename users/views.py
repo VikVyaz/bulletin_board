@@ -63,7 +63,7 @@ class PasswordResetRequestAPIView(APIView):
         serializer = PasswordResetRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        email = serializer.validated_data['email']
+        email = serializer.validated_data["email"]
         try:
             user = User.objects.get(email=email)
             token = default_token_generator.make_token(user)
@@ -80,7 +80,10 @@ class PasswordResetRequestAPIView(APIView):
         except User.DoesNotExist:
             pass
 
-        return Response({'message': 'Если пользователь существует, письмо отправлено.'}, status=status.HTTP_200_OK)
+        return Response(
+            {"message": "Если пользователь существует, письмо отправлено."},
+            status=status.HTTP_200_OK,
+        )
 
 
 class PasswordResetConfirmAPIView(APIView):
@@ -103,7 +106,9 @@ class PasswordResetConfirmAPIView(APIView):
             else:
                 raise ValidationError
 
-            return Response({'success': 'Пароль изменен'}, status=status.HTTP_200_OK)
+            return Response({"success": "Пароль изменен"}, status=status.HTTP_200_OK)
 
         except User.DoesNotExist or ValidationError:
-            return Response({'fail': 'Неверный uid или token'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"fail": "Неверный uid или token"}, status=status.HTTP_400_BAD_REQUEST
+            )

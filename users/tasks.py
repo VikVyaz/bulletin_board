@@ -12,10 +12,13 @@ def send_reset_password_mail(email: str, link: str):
 
     try:
         send_mail(
-            subject='Сброс пароля',
-            message=f'Чтобы сбросить пароля перейдите по ссылке: {link}',
+            subject="Сброс пароля",
+            message=f"Чтобы сбросить пароля перейдите по ссылке: {link}",
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email]
+            recipient_list=[email],
         )
     except Exception as e:
-        return Response({'error': f'Некорректный email.\n(Ошибка:{e})'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": f"Некорректный email.\n(Ошибка:{e})"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
