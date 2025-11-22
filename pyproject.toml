@@ -81,6 +81,7 @@ gunicorn = "23.0.0"
 pytokens = "0.3.0"
 pytest = "^9.0.1"
 pytest-django = "^4.11.1"
+pytest-cov = "^7.0.0"
 
 
 [build-system]

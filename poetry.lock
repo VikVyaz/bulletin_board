@@ -1461,6 +1461,26 @@ pygments = ">=2.7.2"
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-cov"
+version = "7.0.0"
+description = "Pytest plugin for measuring coverage."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pytest_cov-7.0.0-py3-none-any.whl", hash = "sha256:3b8e9558b16cc1479da72058bdecf8073661c7f57f7d3c5f22a1c23507f2d861"},
+    {file = "pytest_cov-7.0.0.tar.gz", hash = "sha256:33c97eda2e049a0c5298e91f519302a1334c26ac65c1a483d6206fd458361af1"},
+]
+
+[package.dependencies]
+coverage = {version = ">=7.10.6", extras = ["toml"]}
+pluggy = ">=1.2"
+pytest = ">=7"
+
+[package.extras]
+testing = ["process-tests", "pytest-xdist", "virtualenv"]
+
+[[package]]
 name = "pytest-django"
 version = "4.11.1"
 description = "A Django plugin for pytest."
@@ -1817,4 +1837,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "7d74d53d5f87cec029016e3e7b0cb75a509445520ebbd52ef2f3f0e72a74c63d"
+content-hash = "6109ad659d6412d22b4917779175dbbce362cf94816e0af0d97bd496eee611ac"

@@ -5,7 +5,7 @@ from board.filters import AdFilter
 from board.models import Ad, Feedback
 from board.paginators import AdPaginator, FeedbackPaginator
 from board.permissions import IsAdmin, IsAuthor
-from board.serializers import AdSerializer, FeedbackSerializer
+from board.serializers import AdSerializer, FeedbackSerializer, AdCreateUpdateSerializer, FeedbackCreateUpdateSerializer
 
 
 class AdListView(generics.ListAPIView):
@@ -25,7 +25,7 @@ class AdCreateView(generics.CreateAPIView):
     """Create view для объявления"""
 
     queryset = Ad.objects.all()
-    serializer_class = AdSerializer
+    serializer_class = AdCreateUpdateSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -42,7 +42,7 @@ class AdUpdateView(generics.UpdateAPIView):
     """Update view для объявления"""
 
     queryset = Ad.objects.all()
-    serializer_class = AdSerializer
+    serializer_class = AdCreateUpdateSerializer
     permission_classes = [IsAdmin | IsAuthor]
 
 
@@ -66,7 +66,7 @@ class FeedbackCreateView(generics.CreateAPIView):
     """Create view для отзыва"""
 
     queryset = Feedback.objects.all()
-    serializer_class = FeedbackSerializer
+    serializer_class = FeedbackCreateUpdateSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -83,7 +83,7 @@ class FeedbackUpdateView(generics.UpdateAPIView):
     """Update view для отзыва"""
 
     queryset = Feedback.objects.all()
-    serializer_class = FeedbackSerializer
+    serializer_class = FeedbackCreateUpdateSerializer
     permission_classes = [IsAdmin | IsAuthor]
 
 
@@ -103,7 +103,7 @@ class SearchView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_class = AdFilter
 
-    def get_base_queryset(self):
+    def get_queryset(self):
         if self.request.user.role == "user":
             return Ad.objects.filter(is_public=True)
         return Ad.objects.all()
