@@ -5,7 +5,10 @@ from django.db import models
 class User(AbstractUser):
     """Модель пользователя"""
 
-    ROLE = [("user", "Обычный пользователь"), ("admin", "Админ")]
+    ROLE = [
+        ("user", "Обычный пользователь"),
+        ("admin", "Админ")
+    ]
 
     first_name = models.CharField(
         verbose_name="Имя пользователя", help_text="Имя пользователя"
