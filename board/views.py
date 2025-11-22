@@ -22,6 +22,9 @@ class AdCreateView(generics.CreateAPIView):
     queryset = Ad.objects.all()
     serializer_class = AdSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
 
 class AdRetrieveView(generics.RetrieveAPIView):
     queryset = Ad.objects.all()
@@ -47,6 +50,9 @@ class FeedbackListView(generics.ListAPIView):
 class FeedbackCreateView(generics.CreateAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class FeedbackRetrieveView(generics.RetrieveAPIView):
