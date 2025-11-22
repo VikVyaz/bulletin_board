@@ -4,7 +4,7 @@ from .models import Ad
 
 
 class AdFilter(django_filters.FilterSet):
-    """Django-filter для объявлений."""
+    """Django-filter для объявлений"""
 
     title = django_filters.CharFilter(field_name="title", lookup_expr="icontains")
     price = django_filters.CharFilter(field_name="price", lookup_expr="icontains")

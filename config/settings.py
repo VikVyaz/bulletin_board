@@ -34,7 +34,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated" if not DEBUG else "rest_framework.permissions.AllowAny",
+    ),
 }
 
 if DEBUG:
@@ -149,12 +151,11 @@ if DEBUG:
 else:
     CORS_ALLOWED_ORIGINS = [
         "http://127.0.0.1:8000",
-        "http://127.0.0.1:8000/swagger/",
         f'http://{config('SERVER_PUB_IP', default="http://localhost:8000")}',
     ]
 
 CORS_ALLOW_HEADERS = list(default_headers) + [
-    "Authorization",
+    "Authorization"
 ]
 
 # Yandex mailing

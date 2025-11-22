@@ -8,6 +8,7 @@ class Command(BaseCommand):
         u = get_user_model()
         if not get_user_model().objects.filter(email="admin@mail.com").exists():
             user = u.objects.create(
+                username='test',
                 first_name="test",
                 last_name="test",
                 phone="test",

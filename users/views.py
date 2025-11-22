@@ -20,7 +20,6 @@ class UserListAPIView(ListAPIView):
 
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
 
 
 class UserCreateAPIView(CreateAPIView):
@@ -28,7 +27,7 @@ class UserCreateAPIView(CreateAPIView):
 
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = [AllowAny]
 
 
 class UserRetrieveAPIView(RetrieveAPIView):
@@ -36,7 +35,6 @@ class UserRetrieveAPIView(RetrieveAPIView):
 
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
 
 
 class UserUpdateAPIView(UpdateAPIView):
@@ -44,14 +42,12 @@ class UserUpdateAPIView(UpdateAPIView):
 
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
 
 
 class UserDestroyAPIView(DestroyAPIView):
     """Destroy view для User"""
 
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
 
 
 class PasswordResetRequestAPIView(APIView):
@@ -87,6 +83,8 @@ class PasswordResetRequestAPIView(APIView):
 
 
 class PasswordResetConfirmAPIView(APIView):
+    """APIView подтверждения сброса пароля на основе данных с почты"""
+
     permission_classes = [AllowAny]
 
     def post(self, request):

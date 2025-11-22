@@ -78,11 +78,7 @@ class Feedback(models.Model):
     )
 
     def __str__(self):
-        return (
-            f"Отзыв №{self.pk} на объявление № {self.related_ad.pk}, "
-            f'автор: {self.author.first_name if self.author else "Неизвестный"} '
-            f'{self.author.last_name if self.author else "автор"}'
-        )
+        return f"Отзыв №{self.pk} на объявление № {self.related_ad.pk if self.related_ad else 'Отсутствует'}"
 
     class Meta:
         verbose_name = "Отзыв"
