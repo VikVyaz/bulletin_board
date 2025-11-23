@@ -20,12 +20,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "drf_yasg",
     "corsheaders",
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
     "django_celery_beat",
+
     "users",
     "board",
 ]
@@ -89,7 +91,7 @@ else:
             "NAME": config("POSTGRES_DB"),
             "USER": config("POSTGRES_USER"),
             "PASSWORD": config("POSTGRES_PASSWORD"),
-            "HOST": config("HOST", default="localhost"),
+            "HOST": config("POSTGRES_HOST", default="localhost"),
             "PORT": config("PORT"),
         }
     }

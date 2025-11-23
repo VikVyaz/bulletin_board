@@ -164,3 +164,4 @@ cython_debug/
 
 # Пользовательские исключения
 draft/
+/staticfiles/
