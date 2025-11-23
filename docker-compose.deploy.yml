@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://${SERVER_PUB_IP}:8000/" ]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/ || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 12

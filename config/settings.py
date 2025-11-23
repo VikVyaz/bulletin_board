@@ -11,7 +11,7 @@ SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'bulletin-board']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
