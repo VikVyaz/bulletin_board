@@ -1,0 +1,83 @@
+services:
+  web:
+    container_name: web
+    image: ${DOCKER_HUB_USERNAME}/bulletin_board:${TAG}
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - static_volume:/app/staticfiles
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.29.3
+    ports:
+      - '80:80'
+    volumes:
+      - /home/${SSH_USER}/Bulletin_board/nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/app/staticfiles
+    depends_on:
+      - web
+
+  celery:
+    container_name: celery
+    image: ${DOCKER_HUB_USERNAME}/bulletin_board:${TAG}
+    command: celery -A config worker -l INFO -P eventlet
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  beat:
+    container_name: celery-beat
+    image: ${DOCKER_HUB_USERNAME}/bulletin_board:${TAG}
+    command: celery -A config beat -l INFO
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  redis:
+    container_name: redis
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  db:
+    container_name: db
+    image: postgres:16
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $POSTGRES_USER" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+networks:
+  default:
+
+volumes:
+  postgres_data:
+  static_volume:
+  redis_data:

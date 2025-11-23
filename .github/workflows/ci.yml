@@ -1,0 +1,130 @@
+name: Django CI
+
+on: [ push ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run Flake8
+        run: flake8 .
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run migrate
+        run: python manage.py migrate
+
+      - name: Run tests
+        run: pytest --tb=short --maxfail=1 --ds=config.settings
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          ref: feature/local_and_server_deploy
+
+      - name: Log in to Docker Hub
+        run: echo ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build app image (web/celery/beat)
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/bulletin_board:${{ github.sha }} -f Dockerfile .
+
+      - name: Push app image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/bulletin_board:${{ github.sha }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: Make dir on Server
+        run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "mkdir -p /home/${{ secrets.SSH_USER }}/bulletin_board"
+
+      - name: Deploy .env, nginx.conf and docker-compose.yml to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "cat > ~/Bulletin_board/.env" <<'EOF'
+          ${{ secrets.ENV_FILE }}
+          EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "cat > ~/Bulletin_board/docker-compose.yml" <<'EOF'
+          ${{ secrets.DOC_COMP_DEPLOY }}
+          EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "cat > ~/Bulletin_board/nginx.conf" <<'EOF'
+          ${{ secrets.NGINX_CONF }}
+          EOF
+
+      - name: Deploy to Server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} <<EOF
+            
+            cd ~/Bulletin_board
+          
+            sed -i '/^TAG=/d' .env
+            echo "TAG=${GITHUB_SHA}" >> .env
+            
+            sed -i '/^DOCKER_HUB_USERNAME=/d' .env
+            echo "DOCKER_HUB_USERNAME=${{ secrets.DOCKER_HUB_USERNAME }}" >> .env
+          
+            sed -i '/^SSH_USER=/d' .env
+            echo "SSH_USER=${{ secrets.SSH_USER }}" >> .env
+            
+            sudo docker ps -aq | xargs -r sudo docker stop
+            sudo docker ps -aq | xargs -r sudo docker rm -f
+            
+            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/bulletin_board:${GITHUB_SHA}
+          
+            sudo docker compose up -d
+          
+            sudo docker image prune -af
+          
+          EOF

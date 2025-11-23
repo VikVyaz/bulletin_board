@@ -11,23 +11,35 @@
 
 
 ### Деплой на сервер
-В ДАННЫЙ МОМЕНТ деплой происходит при любом push и проект берется из ветки feature/6_deploy.
-Адрес сервера: `158.160.206.209`
+В ДАННЫЙ МОМЕНТ деплой происходит при любом push и проект берется из ветки `feature/local_and_server_deploy`.
+Проект уже задеплоен на сервер: `130.193.57.240`
 
-Шаги:
+Шаги для самостоятельного деплоя:
 1. Сделать свой `.env` из `.env.samles`
-2. Создать и настроить свой сервер (например на Яндекс Cloud)
-   * в консоле сервера:
-     * `sudo apt update`
-     * `sudo apt upgrade`
-     * скачать Docker по официальному туториалу https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+2. Создать и настроить свой сервер (например на Яндекс Cloud). Прописать в консоле сервера ВМ:
+   * `sudo apt update`
+   * `sudo apt upgrade`
+   * скачать Docker по официальному туториалу https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+   * открыть порты в файрволе:
+     * `sudo ufw status` - проверка статуса
+     * `sudo ufw enable` - если статус `Status: inactive` - активирует `ufw` 
+     * `sudo ufw allow 80/tcp 443/tcp 22/tcp` - открытие портов 443, 80 и 22
+     * `sudo ufw status` - проверка открытия портов, должно быть:
+     ```
+       Status: active
+
+       To                         Action      From
+       --                         ------      ----
+       22,80,443/tcp              ALLOW       Anywhere
+       22,80,443/tcp (v6)         ALLOW       Anywhere (v6)
+     ```
 3. Настройка GitHub Secrets:
    * `SSH_USER` - юзер сервера
    * `SSH_KEY` - приватный SSH
    * `SERVER_IP` - публичный IP сервера
    * `ENV_FILE` - твой .env файл с данными
    * `DOCKER_HUB_USERNAME` и `DOCKER_HUB_ACCESS_TOKEN` - юзернейм и токен от Docker Hub
-   * `DEPLOY_DIR` - директория для деплоя на сервере
+   * `DEPLOY_DIR` - директория для деплоя на сервере (`/home/<SSH_USER>/<название>`)
    * `DOC_COMP_DEPLOY` - `docker-compose.deploy.yml` из корня проекта (так проще)
    * `NGINX_CONF` - `Dockerfiles/nginx/nginx.conf`
 4. Также важно добавить пользователя `SSH_USER` в группу `docker` на сервере
