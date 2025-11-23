@@ -33,15 +33,6 @@ class AdSerializer(serializers.ModelSerializer):
         model = Ad
         fields = "__all__"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        request = self.context.get("request")
-
-        if request and hasattr(request, 'user') and request.user.is_authenticated:
-            if request.user.role == "user":
-                self.fields.pop("is_public", None)
-
 
 class AdCreateUpdateSerializer(serializers.ModelSerializer):
     """Сериализатор create/update для объявления"""

@@ -33,11 +33,6 @@ class Ad(models.Model):
         verbose_name="Дата и время создания объявления",
         help_text="Дата и время создания объявления",
     )
-    is_public = models.BooleanField(
-        default=True,
-        verbose_name="Доступность для отображения пользователям с role=user",
-        help_text="Доступность для отображения пользователям с role=user",
-    )
 
     def __str__(self):
         return f'Объявление №{self.pk} - "{self.title}"'

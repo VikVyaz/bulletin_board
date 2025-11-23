@@ -4,7 +4,7 @@ from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Сериализотор для User"""
+    """Сериализатор для User"""
 
     class Meta:
         model = User
@@ -40,4 +40,4 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
 
     uid = serializers.CharField()
     token = serializers.CharField()
-    new_password = serializers.CharField(min_length=15)
+    new_password = serializers.CharField(max_length=15)

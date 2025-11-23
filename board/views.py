@@ -1,11 +1,14 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
+
 from board.filters import AdFilter
 from board.models import Ad, Feedback
 from board.paginators import AdPaginator, FeedbackPaginator
 from board.permissions import IsAdmin, IsAuthor
-from board.serializers import AdSerializer, FeedbackSerializer, AdCreateUpdateSerializer, FeedbackCreateUpdateSerializer
+from board.serializers import (AdCreateUpdateSerializer, AdSerializer,
+                               FeedbackCreateUpdateSerializer,
+                               FeedbackSerializer)
 
 
 class AdListView(generics.ListAPIView):
@@ -14,11 +17,7 @@ class AdListView(generics.ListAPIView):
     serializer_class = AdSerializer
     pagination_class = AdPaginator
     permission_classes = [AllowAny]
-
-    def get_queryset(self):
-        if self.request.user.is_authenticated and self.request.user.role == "user":
-            return Ad.objects.filter(is_public=True)
-        return Ad.objects.all()
+    queryset = Ad.objects.all()
 
 
 class AdCreateView(generics.CreateAPIView):
@@ -99,11 +98,6 @@ class SearchView(generics.ListAPIView):
     """View для поиска по объявлениям"""
 
     serializer_class = AdSerializer
-
+    queryset = Ad.objects.all()
     filter_backends = [DjangoFilterBackend]
     filterset_class = AdFilter
-
-    def get_queryset(self):
-        if self.request.user.role == "user":
-            return Ad.objects.filter(is_public=True)
-        return Ad.objects.all()

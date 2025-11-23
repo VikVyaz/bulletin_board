@@ -91,3 +91,5 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["test_*.py", "*_test.py"]
+testpaths = ["board", "users"]
+norecursedirs = ["management"]

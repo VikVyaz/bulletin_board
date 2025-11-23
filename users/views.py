@@ -4,10 +4,10 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
                                      UpdateAPIView)
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from drf_yasg.utils import swagger_auto_schema
 from users.models import User
 from users.serializers import (PasswordResetConfirmSerializer,
                                PasswordResetRequestSerializer, UserSerializer)
@@ -53,8 +53,11 @@ class UserDestroyAPIView(DestroyAPIView):
 class PasswordResetRequestAPIView(APIView):
     """APIView для запроса сброса пароля"""
 
-    permissions_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        request_body=PasswordResetRequestSerializer
+    )
     def post(self, request):
         serializer = PasswordResetRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -87,6 +90,9 @@ class PasswordResetConfirmAPIView(APIView):
 
     permission_classes = [AllowAny]
 
+    @swagger_auto_schema(
+        request_body=PasswordResetConfirmSerializer
+    )
     def post(self, request):
         serializer = PasswordResetConfirmSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

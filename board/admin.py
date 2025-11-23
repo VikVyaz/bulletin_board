@@ -4,14 +4,14 @@ from board.models import Ad, Feedback
 
 
 @admin.register(Ad)
-class PleasantAdmin(admin.ModelAdmin):
+class AdAdmin(admin.ModelAdmin):
     """Доступ для админки для PleasantHabit"""
 
     list_display = [field.name for field in Ad._meta.fields]
 
 
 @admin.register(Feedback)
-class PleasantAdmin(admin.ModelAdmin):
+class FeedbackAdmin(admin.ModelAdmin):
     """Доступ для админки для PleasantHabit"""
 
     list_display = [field.name for field in Feedback._meta.fields]
