@@ -1,4 +1,5 @@
 from django.contrib.auth.tokens import default_token_generator
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
@@ -7,7 +8,7 @@ from rest_framework.generics import (CreateAPIView, DestroyAPIView,
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from drf_yasg.utils import swagger_auto_schema
+
 from users.models import User
 from users.serializers import (PasswordResetConfirmSerializer,
                                PasswordResetRequestSerializer, UserSerializer)

@@ -2,8 +2,6 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
-from django.http import Http404
-from django.shortcuts import get_object_or_404
 
 from board.models import Ad, Feedback
 from users.models import User
