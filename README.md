@@ -37,15 +37,19 @@
    * открыть порты в файрволе:
      * `sudo ufw status` - проверка статуса
      * `sudo ufw enable` - если статус `Status: inactive` - активирует `ufw` 
-     * `sudo ufw allow 80/tcp 443/tcp 22/tcp` - открытие портов 443, 80 и 22
+     * `sudo ufw allow 80/tcp`, `sudo ufw allow 443/tcp`, `sudo ufw allow 22/tcp` - открытие портов 443, 80 и 22
      * `sudo ufw status` - проверка открытия портов, должно быть:
      ```
        Status: active
 
        To                         Action      From
        --                         ------      ----
-       22,80,443/tcp              ALLOW       Anywhere
-       22,80,443/tcp (v6)         ALLOW       Anywhere (v6)
+       22/tcp                     ALLOW       Anywhere
+       80/tcp                     ALLOW       Anywhere
+       443/tcp                    ALLOW       Anywhere
+       22/tcp (v6)                ALLOW       Anywhere (v6)
+       80/tcp (v6)                ALLOW       Anywhere (v6)
+       443/tcp (v6)               ALLOW       Anywhere (v6)
      ```
 3. Настройка GitHub Secrets:
    * `SSH_USER` - юзер сервера
