@@ -9,6 +9,7 @@ from board.permissions import IsAdmin, IsAuthor
 from board.serializers import (AdCreateUpdateSerializer, AdSerializer,
                                FeedbackCreateUpdateSerializer,
                                FeedbackSerializer)
+from board.tasks import send_notification
 
 
 class AdListView(generics.ListAPIView):
@@ -68,7 +69,15 @@ class FeedbackCreateView(generics.CreateAPIView):
     serializer_class = FeedbackCreateUpdateSerializer
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        feedback = serializer.save(author=self.request.user)
+
+        user_from = self.request.user.username
+
+        ad = feedback.related_ad
+        email_to = ad.author.email
+        ad_title = ad.title
+
+        send_notification.delay(user_from, email_to, ad_title)
 
 
 class FeedbackRetrieveView(generics.RetrieveAPIView):

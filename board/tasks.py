@@ -1,21 +1,19 @@
-import logging
-
 from celery import shared_task
 from django.core.mail import send_mail
+import logging
 
 from config import settings
 
 
 @shared_task
-def send_reset_password_mail(email: str, link: str):
-    """Asinc отправка письма на reset пароля"""
+def send_notification(user_from, email_to, ad_title):
 
     try:
         send_mail(
-            subject="Сброс пароля",
-            message=f"Чтобы сбросить пароля перейдите по ссылке: {link}",
+            subject="Новый отзыв",
+            message=f"Пользователь {user_from} только что оставил новый отзыв под Вашим объявлением '{ad_title}'.",
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[email],
+            recipient_list=[email_to],
         )
     except Exception as e:
         logging.error(f'Ошибка отправки email: {e}')

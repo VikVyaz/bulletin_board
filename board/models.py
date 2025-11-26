@@ -71,6 +71,11 @@ class Feedback(models.Model):
         verbose_name="Дата и время создания отзыва",
         help_text="Дата и время создания отзыва",
     )
+    reported_by_mail = models.BooleanField(
+        default=False,
+        verbose_name='Статус осведомленности пользователя о новом отзыве под его объявлением',
+        help_text='Статус осведомленности пользователя о новом отзыве под его объявлением'
+    )
 
     def __str__(self):
         return f"Отзыв №{self.pk} на объявление № {self.related_ad.pk if self.related_ad else 'Отсутствует'}"
