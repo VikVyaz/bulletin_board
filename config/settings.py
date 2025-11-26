@@ -1,4 +1,5 @@
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -173,13 +174,12 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # CELERY
 
 CELERY_BROKER_URL = config("CELERY_BROKER_URL")
-
 CELERY_RESULT_BACKEND = config("CELERY_BACKEND")
-
 CELERY_TIMEZONE = "UTC"
-
 CELERY_ENABLE_UTC = True
-
 CELERY_TASK_TRACK_STARTED = True
-
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+if 'pytest' in sys.argv:
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True
