@@ -48,7 +48,7 @@ def feedback_quantity_notification():
                     msg = (f'было {unreported_feedbacks.count()} новых отзывов под твоими объявлениями.'
                            f'Скорее глянь на них!')
                 else:
-                    msg = f'не было новых отзывов под твоими объявлениями.'
+                    msg = 'не было новых отзывов под твоими объявлениями.'
 
                 send_mail(
                     subject=f"Отчет за {frequency[user.mailing_frequency][0]}",
