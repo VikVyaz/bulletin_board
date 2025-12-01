@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -9,6 +11,13 @@ class User(AbstractUser):
         ("user", "Обычный пользователь"),
         ("admin", "Админ")
     ]
+
+    MAILING_FREQ = [
+        ('day', 'Ежедневная рассылка'),
+        ('week', 'Еженедельная рассылка'),
+        ('month', 'Ежемесячная рассылка')
+    ]
+
     username = models.CharField(
         max_length=20,
         unique=True
@@ -41,6 +50,24 @@ class User(AbstractUser):
         upload_to="avatars/",
         default="default/user.png",
         help_text="Аватарка пользователя"
+    )
+    mailing = models.BooleanField(
+        default=False,
+        verbose_name='Статус рассылки о количестве новых отзывов под объявлениями пользователя',
+        help_text='Статус рассылки о количестве новых отзывов под объявлениями пользователя'
+    )
+    mailing_frequency = models.CharField(
+        choices=MAILING_FREQ,
+        default='month',
+        blank=True,
+        null=True,
+        verbose_name='Частота рассылки: день/неделя/месяц (Если рассылка активна | mailing=True)',
+        help_text='Частота рассылки: день/неделя/месяц (Если рассылка активна | mailing=True)'
+    )
+    next_mailing = models.DateField(
+        auto_now_add=True,
+        verbose_name='Дата следующей рассылки (Если рассылка активна | mailing=True)',
+        help_text='Дата следующей рассылки (Если рассылка активна | mailing=True)'
     )
 
     USERNAME_FIELD = "email"

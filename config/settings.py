@@ -183,3 +183,20 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 if 'pytest' in sys.argv:
     CELERY_TASK_ALWAYS_EAGER = True
     CELERY_TASK_EAGER_PROPAGATES = True
+
+# Celery-beat
+
+if not DEBUG:
+    CELERY_BEAT_SCHEDULE = {
+        'check_habits': {
+            'task': 'board.tasks.feedback_quantity_notification',
+            'schedule': timedelta(days=1),
+        },
+    }
+else:
+    CELERY_BEAT_SCHEDULE = {
+        'check_habits': {
+            'task': 'board.tasks.feedback_quantity_notification',
+            'schedule': timedelta(seconds=30),
+        },
+    }

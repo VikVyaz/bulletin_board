@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from rest_framework import serializers
 
 from users.models import User
@@ -8,7 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'first_name', 'last_name', 'phone', 'email', 'role', 'image')
+        fields = (
+            'username', 'password', 'first_name', 'last_name', 'phone',
+            'email', 'role', 'image', 'mailing', 'mailing_frequency'
+        )
         extra_kwargs = {"password": {"write_only": True}}
 
     def save_password(self, user, password):
@@ -20,6 +25,16 @@ class UserSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password", None)
         user = super().create(validated_data)
         self.save_password(user, password)
+
+        frequency = {
+            'day': timedelta(days=1),
+            'week': timedelta(weeks=1),
+            'month': timedelta(days=30)
+        }
+
+        insert_frequency = validated_data['mailing_frequency']
+        user.next_mailing += frequency[insert_frequency]
+
         return user
 
     def update(self, instance, validated_data):
