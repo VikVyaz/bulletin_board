@@ -11,7 +11,8 @@ from rest_framework.views import APIView
 
 from users.models import User
 from users.serializers import (PasswordResetConfirmSerializer,
-                               PasswordResetRequestSerializer, UserSerializer)
+                               PasswordResetRequestSerializer, UserSerializer,
+                               UserUpdateSerializer)
 
 from .tasks import send_reset_password_mail
 
@@ -41,7 +42,7 @@ class UserRetrieveAPIView(RetrieveAPIView):
 class UserUpdateAPIView(UpdateAPIView):
     """Update view для User"""
 
-    serializer_class = UserSerializer
+    serializer_class = UserUpdateSerializer
     queryset = User.objects.all()
 
 

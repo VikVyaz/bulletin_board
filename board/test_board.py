@@ -18,7 +18,8 @@ class TestAdAPI:
             last_name='test',
             phone='test',
             email='test_admin@mail.com',
-            role='admin'
+            role='admin',
+            mailing=True,
         )
         self.user = User.objects.create(
             username='test',
@@ -27,7 +28,8 @@ class TestAdAPI:
             last_name='test',
             phone='test',
             email='test@mail.com',
-            role='user'
+            role='user',
+            mailing=True,
         )
         self.client.force_authenticate(user=self.user)
 

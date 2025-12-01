@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.utils import timezone
 from rest_framework import serializers
 
 from users.models import User
@@ -16,15 +17,12 @@ class UserSerializer(serializers.ModelSerializer):
         )
         extra_kwargs = {"password": {"write_only": True}}
 
-    def save_password(self, user, password):
-        if password:
-            user.set_password(password)
-            user.save()
-
     def create(self, validated_data):
         password = validated_data.pop("password", None)
         user = super().create(validated_data)
-        self.save_password(user, password)
+        if password:
+            user.set_password(password)
+            user.save()
 
         frequency = {
             'day': timedelta(days=1),
@@ -32,15 +30,35 @@ class UserSerializer(serializers.ModelSerializer):
             'month': timedelta(days=30)
         }
 
-        insert_frequency = validated_data['mailing_frequency']
-        user.next_mailing += frequency[insert_frequency]
+        insert_frequency = validated_data.get('mailing_frequency') or 'month'
+        user.next_mailing = timezone.now().date() + frequency[insert_frequency]
+        user.save()
 
         return user
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    """Сериализатор только для UPDATE для User"""
+
+    class Meta:
+        model = User
+        fields = (
+            'username', 'password', 'first_name', 'last_name', 'phone',
+            'email', 'role', 'image', 'mailing', 'mailing_frequency', 'next_mailing'
+        )
+        extra_kwargs = {"password": {"write_only": True}}
+
+    def validate_next_mailing(self, value):
+        if value < timezone.now().date():
+            raise serializers.ValidationError("Next mailing date cannot be in the past")
+        return value
 
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
         user = super().update(instance, validated_data)
-        self.save_password(user, password)
+        if password:
+            user.set_password(password)
+            user.save()
         return user
 
 
