@@ -1,75 +1,63 @@
 # Доска объявлений
 
-Приложение является API для доски объявлений с отзывами, аутентификацией, 
-системой уведомлений и Celery.
+## О проекте
+Backend API для сервиса с объявлениями, отзывами, аутентификацией, 
+email-уведомлениями и автоматическим деплоем Docker + GitHub Actions.
 
-## Основные фичи
+## ✨ Основной функционал
 
-* `JWT-аутентификация` по Bearer
-* Реализована `CORS`-конфигурация
-* `DRF` + `Swagger` + `Redoc`
-* Тесты `pytest`
-* Реализован поиск по объявлениям по критериям: название(title), цена(price) и описание(description).
-* Реализованы `Permissions` для пользователей разного статуса
-* Пользователь может сбросить пароль от аккаунта (`Celery`)
-  * `~/reset_password/` - запрос на сброс
-  * `~/reset_password_confirm/` - подтверждение сброса по id и токену с письма на почту + новый пароль
+🔐 Аутентификация и пользователи
+* JWT-аутентификация (Bearer)
+* Роли: user, admin
+* Сброс пароля по email (uid + token)
 
-Extra:
-* Реализовано `Celery` уведомление через почту о новом отзыве под объявлением пользователя
-* Реализовано `celery-beat` трекер о количестве новых отзывов
+📢 Объявления (Ad)
+* CRUD для объявлений.
+* Сортировка по дате (новые выше).
+* Поиск по полям: title, price, description.
+* Пагинация (≤ 4 на страницу).
 
-### Локальный деплой
-Шаги:
-1. Запустить Docker приложение
-2. Логин в Docker Hub (если необходим)
-    * в cmd-консоле `docker login -u <docker hub username>`, потом ввести токен от Docker Hub
-3. `docker compose -f docker-compose.local.yml up --build` - запустить контейнер с билдом из `docker-compose.local.yml` для локального деплоя
-4. В браузере перейти на  `localhost`
+💬 Отзывы (Feedback)
+* Пользователи могут оставлять отзывы под объявлениями.
+* CRUD для своих отзывов.
+* Админ может управлять всеми отзывами.
 
+👮 Permissions
+* Аноним: только просмотр списка объявлений.
+* User: свои объявления/отзывы.
+* Admin: управление всем.
 
-### Деплой на сервер
-В ДАННЫЙ МОМЕНТ деплой происходит при любом push и проект берется из ветки `feature/local_and_server_deploy`.
-Проект уже задеплоен на сервер: `http://130.193.57.240`
+🚀 Extra фичи
+* Celery уведомления по email о новых отзывах
+* Celery-beat: периодический трекер количества новых отзывов
+* Деплой на ВМ Yandex Cloud (Docker + Actions) ~http://130.193.57.240~
 
-`На сервере уже создан тестовый superuser admin@mail.com, пароль 1234`
+## 🛠 Технологии и стек
+* Python 3.12+
+* Django, Django REST Framework
+* PostgreSQL
+* CORS-конфигурация
+* Nginx
+* JWT (SimpleJWT)
+* Celery + Celery-beat + Redis
+* Docker, Docker Compose, Docker Hub
+* GitHub Actions (CI/CD), GitHub Secrets
+* Swagger / Redoc
+* pytest
 
-Шаги для самостоятельного деплоя:
-1. Сделать свой `.env` из `.env.samles`
-2. Создать и настроить свой сервер (например на Яндекс Cloud). Прописать в консоле сервера ВМ:
-   * `sudo apt update`
-   * `sudo apt upgrade`
-   * скачать Docker по официальному туториалу https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
-   * открыть порты в файрволе:
-     * `sudo ufw status` - проверка статуса
-     * `sudo ufw enable` - если статус `Status: inactive` - активирует `ufw` 
-     * `sudo ufw allow 80/tcp`, `sudo ufw allow 443/tcp`, `sudo ufw allow 22/tcp` - открытие портов 443, 80 и 22
-     * `sudo ufw status` - проверка открытия портов, должно быть:
-     ```
-       Status: active
+## 📚 API Документация
+* Swagger UI: http://130.193.57.240/swagger/
+* Redoc: http://130.193.57.240/redoc/
 
-       To                         Action      From
-       --                         ------      ----
-       22/tcp                     ALLOW       Anywhere
-       80/tcp                     ALLOW       Anywhere
-       443/tcp                    ALLOW       Anywhere
-       22/tcp (v6)                ALLOW       Anywhere (v6)
-       80/tcp (v6)                ALLOW       Anywhere (v6)
-       443/tcp (v6)               ALLOW       Anywhere (v6)
-     ```
-3. Настройка GitHub Secrets:
-   * `SSH_USER` - юзер сервера
-   * `SSH_KEY` - приватный SSH
-   * `SERVER_IP` - публичный IP сервера
-   * `ENV_FILE` - твой .env файл с данными
-   * `DOCKER_HUB_USERNAME` и `DOCKER_HUB_ACCESS_TOKEN` - юзернейм и токен от Docker Hub
-   * `DEPLOY_DIR` - директория для деплоя на сервере (`/home/<SSH_USER>/<название>`)
-   * `DOC_COMP_DEPLOY` - `docker-compose.deploy.yml` из корня проекта (так проще)
-   * `NGINX_CONF` - `Dockerfiles/nginx/nginx.conf`
-4. Также важно добавить пользователя `SSH_USER` в группу `docker` на сервере
-   * `getent group docker` - проверить, есть ли группа `docker` (если нет никакого output, то создать - `sudo groupadd docker`)
-   * `sudo usermod -aG docker <username>` - добавление <username> в группу
-   * перезайти на сервер
-   * еще раз `getent group docker` - проверка, должно быть что-то вроде `docker:x:999:<username>`
+## ☁️ Деплой
+Подробная инструкция:
+➡️ [DEPLOY.md](./DEPLOY.md)
 
-Можно пользоваться
+## 📝 Планы
+* Интеграция Telegram как альтернатива email-рассылке
+* Избранные объявления
+
+## 👤 Автор
+
+Кузнецов Виктор
+https://github.com/VikVyaz

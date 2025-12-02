@@ -2,6 +2,7 @@ import os
 import sys
 from datetime import timedelta
 from pathlib import Path
+from celery.schedules import crontab
 
 from corsheaders.defaults import default_headers
 from decouple import config
@@ -12,7 +13,7 @@ SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG")
 
-ALLOWED_HOSTS = ['*', 'bulletin-board']
+ALLOWED_HOSTS = ['130.193.57.240', 'localhost']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -189,14 +190,14 @@ if 'pytest' in sys.argv:
 if not DEBUG:
     CELERY_BEAT_SCHEDULE = {
         'check_habits': {
-            'task': 'board.tasks.feedback_quantity_notification',
-            'schedule': timedelta(days=1),
+            'task': 'users.tasks.feedback_quantity_notification',
+            'schedule': crontab(hour=17, minute=0),
         },
     }
 else:
     CELERY_BEAT_SCHEDULE = {
         'check_habits': {
-            'task': 'board.tasks.feedback_quantity_notification',
+            'task': 'users.tasks.feedback_quantity_notification',
             'schedule': timedelta(seconds=30),
         },
     }
