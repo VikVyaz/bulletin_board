@@ -46,7 +46,7 @@ class User(AbstractUser):
     )
     image = models.ImageField(
         verbose_name="Аватарка пользователя",
-        upload_to="avatars/",
+        upload_to="",
         default="default/user.png",
         help_text="Аватарка пользователя"
     )
@@ -58,8 +58,6 @@ class User(AbstractUser):
     mailing_frequency = models.CharField(
         choices=MAILING_FREQ,
         default='month',
-        blank=True,
-        null=True,
         verbose_name='Частота рассылки: день/неделя/месяц (Если рассылка активна | mailing=True)',
         help_text='Частота рассылки: день/неделя/месяц (Если рассылка активна | mailing=True)'
     )
