@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from psycopg2 import OperationalError
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-dbname = config("POSTGRES_DB")
+dbname = config('LOCAL_DB', default=config("POSTGRES_DB"))
 user = config("POSTGRES_USER")
 password = config("POSTGRES_PASSWORD")
 host = config("HOST")

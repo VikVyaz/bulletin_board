@@ -93,7 +93,7 @@ else:
             "NAME": config("POSTGRES_DB"),
             "USER": config("POSTGRES_USER"),
             "PASSWORD": config("POSTGRES_PASSWORD"),
-            "HOST": config("HOST", default=config("POSTGRES_HOST")),
+            "HOST": config("POSTGRES_HOST"),
             "PORT": config("PORT"),
         }
     }
@@ -174,8 +174,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # CELERY
 
-CELERY_BROKER_URL = config("CELERY_BROKER_URL")
-CELERY_RESULT_BACKEND = config("CELERY_BACKEND")
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0' if config('ENV', default=False) else config("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0' if config('ENV', default=False) else config("CELERY_BACKEND")
 CELERY_TIMEZONE = "UTC"
 CELERY_ENABLE_UTC = True
 CELERY_TASK_TRACK_STARTED = True
