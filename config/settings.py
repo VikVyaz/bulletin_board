@@ -2,8 +2,8 @@ import os
 import sys
 from datetime import timedelta
 from pathlib import Path
-from celery.schedules import crontab
 
+from celery.schedules import crontab
 from corsheaders.defaults import default_headers
 from decouple import config
 

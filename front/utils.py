@@ -1,5 +1,4 @@
 import requests
-from django.conf import settings
 
 
 def auth_header(token=None):
@@ -10,7 +9,7 @@ def res(response):
     if response.status_code in (200, 201, 204):
         try:
             return response.json() if response.content else {'status': 'success'}
-        except:
+        except Exception:
             return {'status': 'success'}
     return {
         'status': 'error',

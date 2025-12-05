@@ -1,7 +1,8 @@
 from django.urls import path
 
 from front.apps import FrontConfig
-from front.views import MainPageView, get_ad_list, user_login, ad_create, ad_detail, user_logout, reset_request
+from front.views import (MainPageView, ad_create, ad_detail, get_ad_list,
+                         reset_request, user_login, user_logout)
 
 app_name = FrontConfig.name
 

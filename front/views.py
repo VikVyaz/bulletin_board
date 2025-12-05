@@ -1,15 +1,11 @@
-from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
+
 from board.models import Ad, Feedback
-from django.contrib.auth import logout, login, authenticate
-import requests
-from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
-
-from front.forms import LoginForm, RegisterFrom, ResetRequestFrom
+from front.forms import LoginForm, ResetRequestFrom
 from front.utils import api_get, api_post
-
 
 # Main Page
 
@@ -41,7 +37,7 @@ def ad_create(request):
         description = request.POST.get('description')
 
         url = request.build_absolute_uri(reverse("board:ad_create"))
-        data = api_post(
+        api_post(
             url,
             {
                 'title': title,
