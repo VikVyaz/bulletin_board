@@ -7,6 +7,7 @@ from board.models import Ad, Feedback
 from front.forms import LoginForm, ResetRequestFrom
 from front.utils import api_get, api_post
 
+
 # Main Page
 
 class MainPageView(View):
