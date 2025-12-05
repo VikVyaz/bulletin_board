@@ -74,9 +74,15 @@ class PasswordResetRequestAPIView(APIView):
             domain = request.get_host()
             base_url = f"{scheme}://{domain}"
 
-            reset_link = f"{base_url}/reset_password/{uid}/{token}"
+            reset_link = f"{base_url}/reset_password_confirm/{uid}/{token}"
 
-            send_reset_password_mail.delay(user.email, reset_link)
+            data = {
+                'reset_link': reset_link,
+                'uid': uid,
+                'token': token
+            }
+
+            send_reset_password_mail.delay(user.email, data)
 
         except User.DoesNotExist:
             pass

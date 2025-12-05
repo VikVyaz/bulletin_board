@@ -18,7 +18,7 @@ urlpatterns = [
     path("<int:pk>/delete/", UserDestroyAPIView.as_view(), name="user_delete"),
 
     path("reset_password/", PasswordResetRequestAPIView.as_view(), name="password-reset-request"),
-    path("reset_password_confirm/", PasswordResetConfirmAPIView.as_view(), name="password-reset-request"),
+    path("reset_password_confirm/", PasswordResetConfirmAPIView.as_view(), name="password-reset-confirm"),
 
     path("token/", TokenObtainPairView.as_view(permission_classes=(AllowAny,)), name="login"),
     path("token/refresh/", TokenRefreshView.as_view(permission_classes=(AllowAny,)), name="token_refresh"),

@@ -13,7 +13,7 @@ SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG")
 
-ALLOWED_HOSTS = ['130.193.57.240', 'localhost']
+ALLOWED_HOSTS = ['130.193.57.240', 'localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -32,6 +32,7 @@ INSTALLED_APPS = [
 
     "users",
     "board",
+    "front",
 ]
 
 REST_FRAMEWORK = {
@@ -91,9 +92,11 @@ else:
         "default": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
             "NAME": config("POSTGRES_DB"),
+            # "NAME": config("LOCAL_DB"),
             "USER": config("POSTGRES_USER"),
             "PASSWORD": config("POSTGRES_PASSWORD"),
             "HOST": config("POSTGRES_HOST"),
+            # "HOST": config("HOST"),
             "PORT": config("PORT"),
         }
     }

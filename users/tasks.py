@@ -11,13 +11,14 @@ from users.models import User
 
 
 @shared_task
-def send_reset_password_mail(email: str, link: str):
+def send_reset_password_mail(email: str, data: dict):
     """Asinc отправка письма на reset пароля"""
 
     try:
         send_mail(
             subject="Сброс пароля",
-            message=f"Чтобы сбросить пароля перейдите по ссылке: {link}",
+            message=f"Чтобы сбросить пароля перейдите по ссылке: {data['reset_link']}."
+                    f"Для API: uid - {data['uid']}, token - {data['token']}.",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
         )
