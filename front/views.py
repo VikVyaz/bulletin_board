@@ -75,19 +75,19 @@ def user_login(request):
             password = form.cleaned_data['password']
 
             user = authenticate(request, username=email, password=password)
+            if user:
+                login(request, user)
 
-            login(request, user)
+                token_url = request.build_absolute_uri(reverse("users:login"))
+                tokens = api_post(token_url, data={
+                    'email': email,
+                    'password': password
+                })
 
-            token_url = request.build_absolute_uri(reverse("users:login"))
-            tokens = api_post(token_url, data={
-                'email': email,
-                'password': password
-            })
+                request.session['access'] = tokens['access']
+                request.session['refresh'] = tokens['refresh']
 
-            request.session['access'] = tokens['access']
-            request.session['refresh'] = tokens['refresh']
-
-            return redirect('front:main_page')
+                return redirect('front:main_page')
 
     return render(request, 'users/login.html', {'form': form})
 
