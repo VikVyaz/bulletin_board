@@ -1,0 +1,206 @@
+import os
+import sys
+from datetime import timedelta
+from pathlib import Path
+
+from celery.schedules import crontab
+from corsheaders.defaults import default_headers
+from decouple import config
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SECRET_KEY = config("SECRET_KEY")
+
+DEBUG = config("DEBUG")
+
+ALLOWED_HOSTS = ['130.193.57.240', 'localhost', '127.0.0.1']
+
+INSTALLED_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+
+    "drf_yasg",
+    "corsheaders",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "django_filters",
+    "django_celery_beat",
+
+    "users",
+    "board",
+    "front",
+]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+}
+
+if DEBUG:
+    SIMPLE_JWT = {
+        "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+        "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    }
+
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+]
+
+ROOT_URLCONF = "config.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+        },
+    },
+]
+
+WSGI_APPLICATION = "config.wsgi.application"
+
+if os.environ.get("GITHUB_ACTIONS") == "true":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": config("POSTGRES_DB"),
+            # "NAME": config("LOCAL_DB"),
+            "USER": config("POSTGRES_USER"),
+            "PASSWORD": config("POSTGRES_PASSWORD"),
+            "HOST": config("POSTGRES_HOST"),
+            # "HOST": config("HOST"),
+            "PORT": config("PORT"),
+        }
+    }
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "UTC"
+
+USE_I18N = True
+
+USE_TZ = True
+
+STATIC_URL = "static/"
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "users.User"
+
+# SWAGGER
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": 'Вставьте свой Bearer токен. Формат: "Bearer (токен)"',
+        }
+    },
+}
+if DEBUG:
+    SWAGGER_SETTINGS["USE_SESSION_AUTH"] = False
+    SWAGGER_SETTINGS["LOGIN_REQUIRED"] = False
+
+# CORS
+
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        "http://127.0.0.1:8000",
+        f'http://{config('SERVER_PUB_IP', default="http://localhost:8000")}',
+    ]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "Authorization"
+]
+
+# Yandex mailing
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = config("YANDEX_EMAIL_HOST", default="test")
+EMAIL_PORT = config("YANDEX_EMAIL_PORT", cast=int, default=465)
+EMAIL_USE_TLS = config("YANDEX_EMAIL_USE_TLS", cast=bool, default=False)
+EMAIL_USE_SSL = config("YANDEX_EMAIL_USE_SSL", cast=bool, default=True)
+EMAIL_HOST_USER = config("YANDEX_EMAIL_HOST_USER", default="test")
+EMAIL_HOST_PASSWORD = config("YANDEX_EMAIL_HOST_PASSWORD", default="test")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# CELERY
+
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = config("CELERY_BACKEND")
+CELERY_TIMEZONE = "UTC"
+CELERY_ENABLE_UTC = True
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+if 'pytest' in sys.argv:
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True
+
+# Celery-beat
+
+if not DEBUG:
+    CELERY_BEAT_SCHEDULE = {
+        'check_habits': {
+            'task': 'users.tasks.feedback_quantity_notification',
+            'schedule': crontab(hour=17, minute=0),
+        },
+    }
+else:
+    CELERY_BEAT_SCHEDULE = {
+        'check_habits': {
+            'task': 'users.tasks.feedback_quantity_notification',
+            'schedule': timedelta(seconds=180),
+        },
+    }

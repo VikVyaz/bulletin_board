@@ -1,16 +1,95 @@
-[project]
+[tool.poetry]
 name = "bulletin-board"
 version = "0.1.0"
-description = "Бекэнд-часть для сайта объявнений"
-authors = [
-    {name = "VikVyaz",email = "nightroni@yandex.com"}
-]
+description = ""
+authors = ["Vik Vyaz"]
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+amqp = "5.3.1"
+asgiref = "3.11.0"
+asttokens = "3.0.1"
+billiard = "4.2.3"
+black = "25.11.0"
+celery = "5.5.3"
+certifi = "2025.11.12"
+charset-normalizer = "3.4.4"
+click = "8.3.1"
+click-didyoumean = "0.3.1"
+click-plugins = "1.1.1.2"
+click-repl = "0.3.0"
+colorama = "0.4.6"
+coverage = "7.12.0"
+cron-descriptor = "2.0.6"
+decorator = "5.2.1"
+django = "5.2.8"
+django-celery-beat = "2.8.1"
+django-cors-headers = "4.9.0"
+django-filter = "25.2"
+django-phonenumber-field = "8.3.0"
+django-timezone-field = "7.1"
+djangorestframework = "3.16.1"
+djangorestframework-simplejwt = "5.5.1"
+dnspython = "2.8.0"
+drf-yasg = "1.21.11"
+eventlet = "0.40.3"
+executing = "2.2.1"
+flake8 = "7.3.0"
+greenlet = "3.2.4"
+idna = "3.11"
+inflection = "0.5.1"
+ipython = "9.7.0"
+ipython-pygments-lexers = "1.1.1"
+isort = "7.0.0"
+jedi = "0.19.2"
+kombu = "5.5.4"
+matplotlib-inline = "0.2.1"
+mccabe = "0.7.0"
+mypy-extensions = "1.1.0"
+packaging = "25.0"
+parso = "0.8.5"
+pathspec = "0.12.1"
+phonenumbers = "9.0.18"
+pillow = "12.0.0"
+platformdirs = "4.5.0"
+prompt-toolkit = "3.0.52"
+psycopg2-binary = "2.9.11"
+pure-eval = "0.2.3"
+pycodestyle = "2.14.0"
+pyflakes = "3.4.0"
+pygments = "2.19.2"
+pyjwt = "2.10.1"
+python-crontab = "3.3.0"
+python-dateutil = "2.9.0.post0"
+python-decouple = "3.8"
+pytz = "2025.2"
+pyyaml = "6.0.3"
+redis = "7.1.0"
+requests = "2.32.5"
+six = "1.17.0"
+sqlparse = "0.5.3"
+stack-data = "0.6.3"
+traitlets = "5.14.3"
+typing-extensions = "4.15.0"
+tzdata = "2025.2"
+uritemplate = "4.2.0"
+urllib3 = "2.5.0"
+vine = "5.1.0"
+wcwidth = "0.2.14"
+gunicorn = "23.0.0"
+pytokens = "0.3.0"
+pytest = "^9.0.1"
+pytest-django = "^4.11.1"
+pytest-cov = "^7.0.0"
 
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py", "*_test.py"]
+testpaths = ["board", "users"]
+norecursedirs = ["management"]
