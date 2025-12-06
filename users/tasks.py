@@ -17,8 +17,8 @@ def send_reset_password_mail(email: str, data: dict):
     try:
         send_mail(
             subject="Сброс пароля",
-            message=f"Чтобы сбросить пароля перейдите по ссылке: {data['reset_link']}."
-                    f"Для API: uid - {data['uid']}, token - {data['token']}.",
+            message=f"Чтобы сбросить пароля перейдите по ссылке: {data['reset_link']} .\n"
+                    f"Для API:\nuid - {data['uid']} \ntoken - {data['token']}",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[email],
         )
