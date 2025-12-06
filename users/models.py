@@ -62,9 +62,10 @@ class User(AbstractUser):
         help_text='Частота рассылки: день/неделя/месяц (Если рассылка активна | mailing=True)'
     )
     next_mailing = models.DateField(
-        auto_now_add=True,
         verbose_name='Дата следующей рассылки (Если рассылка активна | mailing=True)',
-        help_text='Дата следующей рассылки (Если рассылка активна | mailing=True)'
+        help_text='Дата следующей рассылки (Если рассылка активна | mailing=True)',
+        null=True,
+        blank=True
     )
 
     USERNAME_FIELD = "email"
